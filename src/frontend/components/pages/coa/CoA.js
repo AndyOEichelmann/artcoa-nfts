@@ -1,83 +1,49 @@
-import { useLoaderData, useParams } from 'react-router-dom';
+import { useLoaderData } from 'react-router-dom';
+
+// elements
+import CoAData from '../../elements/CoAData';
+import Issuer from '../../elements/Issuer';
 
 
 export default function CoA() {
-    const { id } = useParams();
+    // const { id } = useParams();
 
-    // const coa = useLoaderData();
+    const coa = useLoaderData();
+    //console.log('coa:',coa);
+
+    // retrive statement --- must be chainged once the json data is fixed
+    const statementData = (e) => {
+      if(e.trait_type === "Statement of Authenticity"){
+        return(
+          <div className='coa-statement' key={`${e.trait_type}`}>
+            <h4>{e.trait_type}</h4>
+            <p>{e.value}</p>
+          </div>
+        )
+      }
+    } 
 
   return (
-    <div className='coa'>
-      <h2>Certificate of Authenticity</h2>
-      <h4>{id}</h4>
-      {/* <div className='coa-page'>
-        <div className='coa-img' style={{ backgroundImage:`url(${background})` }}>
-          <p>{coa.token.tokenURI}</p>
-        </div>
-
-        <div className='coa-issuers'>
-          <div className='coa-issuer-signature' style={{ backgroundImage:`url(${signature})` }}>
-            <p>signature: {coa.metadata.issuer.signature}</p>
+    <div className='coa-page'>
+      <div className='coa-img'>
+        <img src={coa.image.replace('ipfs://', 'https://ipfs.io/ipfs/')} alt={`${coa.title} by ${coa.artist}`} />
+      </div>
+      <Issuer issuers={coa.issuers} />
+      <CoAData artist={coa.artist} title={coa.title} properties={coa.properties} />
+      {/**
+       * change in metadata the statement from { coa.properties[n].trait_type:"Statement of Auth" } to { coa.description } 
+       */}
+       <>
+        {coa.properties.map((e) => (
+          statementData(e)
+        ))}
+       </>
+      {/* 
+          <div className='coa-statement'>
+            <h4>Statement</h4>
+            <p>{coa.metadata.properties.statement}</p>
           </div>
-          <div className='coa-issuer-info'>
-            <h4>issuer</h4> 
-            <h4>{coa.metadata.issuer.name}</h4>
-          </div>
-          <div className='coa-issuer-info'>
-            <p>type</p> 
-            <p>{coa.metadata.issuer.type}</p>
-          </div>
-          <div className='coa-issuer-info'>
-            <p>address</p> 
-            <p>{coa.metadata.issuer.address}</p>
-          </div>
-        </div>
-
-        <div className='coa-data'>
-          <div>
-            <h4>Work Title</h4>
-            <p>{coa.metadata.properties.title}</p>
-          </div>
-          <div>
-            <h4>Artist</h4>
-            <p>{coa.metadata.properties.artist}</p>
-          </div>
-          <div>
-            <h4>Date</h4>
-            <p>{coa.metadata.properties.date}</p>
-          </div>
-          <div>
-            <h4>Dimentions</h4>
-            <p>
-              {coa.metadata.properties.dimentions.length}
-              x
-              {coa.metadata.properties.dimentions.height}
-              {coa.metadata.properties.dimentions.unit}
-            </p>
-          </div>
-          <div>
-            <h4>Medium</h4>
-            <p>{coa.metadata.properties.medium}</p>
-          </div>
-          <div>
-            <h4>Edition</h4>
-            <p>{coa.metadata.properties.edition.type}</p>
-          </div>
-          <div>
-            <h4>Contract</h4>
-            <p>{coa.contract}</p>
-          </div>
-          <div>
-            <h4>TokenId</h4>
-            <p>{coa.token.tokenId}</p>
-          </div>
-        </div>
-
-        <div className='coa-statement'>
-          <h4>Statement</h4>
-          <p>{coa.metadata.properties.statement}</p>
-        </div>
-      </div> */}
+      */}
     </div>
   )
 }

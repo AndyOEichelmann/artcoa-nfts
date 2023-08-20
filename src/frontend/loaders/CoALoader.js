@@ -15,7 +15,6 @@ export const galleryLoader = async () => {
     const address = "0x8A465A325B4A684B6D2abf13ecCE6150f4219426";
     
     const res = await alchemy.nft.getNftsForContract(address);
-
     
     // if (!res.ok) {
         //   throw Error('Culd not fetch certificates data');
@@ -38,8 +37,12 @@ export const coaLoader = async ({ params }) => {
     const { id } = params;
 
     const arg = id.split('-');
+    //console.log('info', arg);
 
-    console.log('info', arg);
+    const res = await alchemy.nft.getNftMetadata(arg[0], arg[1]);
+    //console.log(res);
 
-    return 'loaded ...'
+    const coa = await res.rawMetadata;
+
+    return coa;
 }

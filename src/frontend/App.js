@@ -1,6 +1,7 @@
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom';
 
 // layouts
+import CoALayout from './components/layouts/CoALayout';
 import RooLayout from './components/layouts/RootLayout';
 
 // pages
@@ -31,19 +32,21 @@ const router = createBrowserRouter(
       />
 
       <Route 
-        path='createcertificate' 
+        path='/createcertificate' 
         element={<CreateCoA />} 
         // action={certificateAction} 
       />
 
       {/* --- rout correctly the info <Rp cert> <Rc token /> <Rp />--- */}
-      <Route 
-        // path='certificate-:id'
-        path=':id' 
-        element={<CoA />}
-        loader={coaLoader}
-        // errorElement={<CoAError />}
-      />
+      <Route path='/certificate' element={<CoALayout />}>
+        <Route 
+          // path='certificate-:id'
+          path=':id' 
+          element={<CoA />}
+          loader={coaLoader}
+          // errorElement={<CoAError />}
+        />
+      </Route>
 
       {/* --- DEFAULT ROUT FOR NON EXISTING ROUTES --- */}
       <Route path='*' element={<NotFound />} />
