@@ -44,7 +44,7 @@ const router = createBrowserRouter(
           path=':id' 
           element={<CoA />}
           loader={coaLoader}
-          // errorElement={<CoAError />}
+          errorElement={<CoAError />}
         />
       </Route>
 

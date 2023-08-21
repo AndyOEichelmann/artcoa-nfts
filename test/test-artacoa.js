@@ -83,7 +83,7 @@ describe("Chain CoA + Escrow", function () {
             const { coaescrow, coa, account1, account2 } = await loadFixture(deployContractsFixture);
 
             const to = account1.address;
-            tokenId = 0
+            const tokenId = 0
 
             await mintToken(coa, account1, to, artist, `${object} 1`, uri, authuri, tokenId);
 
@@ -99,7 +99,7 @@ describe("Chain CoA + Escrow", function () {
             const { coaescrow, coa, account1, account2 } = await loadFixture(deployContractsFixture);
 
             const to = account1.address;
-            tokenId = 0
+            const tokenId = 0
 
             await mintToken(coa, account1, to, artist, `${object} 1`, uri, authuri, tokenId);
 
@@ -116,7 +116,7 @@ describe("Chain CoA + Escrow", function () {
             const { coaescrow, coa, account1, account2 } = await loadFixture(deployContractsFixture);
 
             const to = account1.address;
-            tokenId = 0
+            const tokenId = 0
 
             await mintToken(coa, account1, to, artist, `${object} 1`, uri, authuri, tokenId);
 
@@ -139,7 +139,7 @@ describe("Chain CoA + Escrow", function () {
             const { coaescrow, coa, account1, account2, account3 } = await loadFixture(deployContractsFixture);
 
             const to = account1.address;
-            tokenId = 0
+            const tokenId = 0
 
             await mintToken(coa, account1, to, artist, `${object} 1`, uri, authuri, tokenId);
 
@@ -164,7 +164,7 @@ describe("Chain CoA + Escrow", function () {
             const { coaescrow, coa, account1, account2 } = await loadFixture(deployContractsFixture);
 
             const to = account1.address;
-            tokenId = 0
+            const tokenId = 0
 
             await mintToken(coa, account1, to, artist, `${object} 1`, uri, authuri, tokenId);
 
@@ -184,7 +184,7 @@ describe("Chain CoA + Escrow", function () {
             const { coaescrow, coa, account1, account2, account3 } = await loadFixture(deployContractsFixture);
 
             const to = account1.address;
-            tokenId = 0
+            const tokenId = 0
 
             await mintToken(coa, account1, to, artist, `${object} 1`, uri, authuri, tokenId);
 

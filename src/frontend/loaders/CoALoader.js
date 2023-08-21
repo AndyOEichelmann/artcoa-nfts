@@ -1,4 +1,15 @@
 const { Alchemy, Network } = require("alchemy-sdk");
+const { ethers } = require('ethers');
+const contract = require("../contract-data/ERC721CoA.json")
+
+// netowork
+const network = 'sepolia';
+
+// Config Alchemy as a provider
+const alchemyProvider = new ethers.AlchemyProvider(network, process.env.REACT_APP_ALCHEMY_API_KEY);
+
+// Configure signer
+const signer = new ethers.Wallet(process.env.REACT_APP_SEPOLIA_PRIVATE_KEY , alchemyProvider);
 
 // Configuration the Alchemy SDK
 const config = {
@@ -37,10 +48,15 @@ export const coaLoader = async ({ params }) => {
     const { id } = params;
 
     const arg = id.split('-');
-    //console.log('info', arg);
+    // console.log('info', arg);
+
+    // Config contract
+    const proxycontract = new ethers.Contract(arg[0], contract.abi, signer);
+
+    const metadataURI = await proxycontract.tokenURI(arg[1]);
 
     const res = await alchemy.nft.getNftMetadata(arg[0], arg[1]);
-    //console.log(res);
+    // console.log(res);
 
     const coa = await res.rawMetadata;
 
