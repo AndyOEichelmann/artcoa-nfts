@@ -23,10 +23,11 @@ const alchemy = new Alchemy(config);
 export const galleryLoader = async () => {
 
     // contract address whose NFTs you want to fetch
-    const address = "0x8A465A325B4A684B6D2abf13ecCE6150f4219426";
+    const address = "0x7D945e32D2B9C2c52b7388e2CD2764A0Cc666FBc";
     
     const res = await alchemy.nft.getNftsForContract(address);
-    
+    // console.log(res.nextToken)
+
     // if (!res.ok) {
         //   throw Error('Culd not fetch certificates data');
     // }
@@ -53,12 +54,46 @@ export const coaLoader = async ({ params }) => {
     // Config contract
     const proxycontract = new ethers.Contract(arg[0], contract.abi, signer);
 
-    const metadataURI = await proxycontract.tokenURI(arg[1]);
+    // obtain all the transfer events from the contact for the token
+   const logs = await alchemy.core.getLogs({
+        address: arg[0],
+        topics: [
+            "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+            null,
+            null,
+            `0x${arg[1].padStart(64, 0)}`
+        ],
+        fromBlock: 'earliest'
+    })
+    console.log("logs: ",logs)
+  
+    // generate the ledger
+    let ledger = [];
+    logs.forEach(async e => {
+        const timestamp = await (await alchemyProvider.getBlock(e.blockNumber)).timestamp;
+        const hystory = {}
 
+        if(Number(e.topics[3]) == arg[1]){
+            hystory.from = `0x${e.topics[1].slice(26)}`;
+            hystory.to = `0x${e.topics[2].slice(26)}`;
+            hystory.transactionHash = e.transactionHash;
+            hystory.timestamp = timestamp;
+        }
+
+        ledger.push(hystory);
+    })
+    console.log("ledger: ",ledger);
+    
     const res = await alchemy.nft.getNftMetadata(arg[0], arg[1]);
-    // console.log(res);
-
+    console.log("res:",res);
+    
     const coa = await res.rawMetadata;
+    
+    // retrive token owner
+    const owner = await proxycontract.ownerOf(arg[1]);
 
-    return coa;
+    // retrive token date
+    const date = Date.parse(res.timeLastUpdated);
+
+    return { coa: coa, owner: owner, date: date, ledger: ledger };
 }

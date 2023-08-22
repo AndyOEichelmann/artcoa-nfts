@@ -1,5 +1,11 @@
 
 const CoAData = ({ artist, title, properties }) => {
+    
+    const dateoptions = {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      };
 
     const renderPro = (e) => {
         if(e.display_type){
@@ -7,7 +13,7 @@ const CoAData = ({ artist, title, properties }) => {
                 return(
                     <div key={`${e.trait_type}`}>
                         <h4>{e.trait_type}</h4>
-                        <p>{e.value}</p>
+                        <p>{new Date(e.value).toLocaleDateString("en-US", dateoptions)}</p>
                     </div>
                 )
             } else {

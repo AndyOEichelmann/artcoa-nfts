@@ -19,7 +19,7 @@ async function main() {
 
 function saveFrontendFiles(contract, name) {
   const fs = require('fs');
-  const contractsDir = __dirname + "/../../frontend/contractsData";
+  const contractsDir = __dirname + "/../src/frontend/contract-data";
 
   if(!fs.existsSync(contractsDir)) {
     fs.mkdirSync(contractsDir);
@@ -45,8 +45,8 @@ main().catch((error) => {
   process.exitCode = 1;
 });
 
-// npx hardhat run --network sepolia src/backend/scripts/deploy-token.js
+// npx hardhat run --network sepolia scripts/deploy-token.js
 
-// npx hardhat verify --network sepolia 0x8A465A325B4A684B6D2abf13ecCE6150f4219426
+// 
 
-// etherscan: https://sepolia.etherscan.io/address/0x8A465A325B4A684B6D2abf13ecCE6150f4219426#code
+// etherscan: https://sepolia.etherscan.io/address/0x7D945e32D2B9C2c52b7388e2CD2764A0Cc666FBc#code

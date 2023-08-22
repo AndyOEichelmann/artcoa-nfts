@@ -110,7 +110,7 @@ contract ERC721CoA is ERC721, ERC721URIStorage, AccessControl {
         _requireMinted(tokenId);
 
         address owner = ERC721.ownerOf(tokenId);
-        require(owner == msg.sender || hasRole(AUTHENTICATOR_ROLE, _msgSender()), "ERC721CoA: must be owner or registered authenticator");
+        require(owner == msg.sender || hasRole(AUTHENTICATOR_ROLE, _msgSender()),string(abi.encodePacked( "ERC721CoA:  account ", Strings.toHexString(_msgSender())," must be owner or registered authenticator")));
 
         return _authenticationURI[tokenId];
     }
