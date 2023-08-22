@@ -2,6 +2,7 @@ import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } 
 
 // layouts
 import CoALayout from './components/layouts/CoALayout';
+import ProfileLayout from './components/layouts/ProfileLayout';
 import RooLayout from './components/layouts/RootLayout';
 
 // pages
@@ -10,6 +11,9 @@ import HomeError from './components/pages/home/HomeError';
 
 import CoA from './components/pages/coa/CoA';
 import CoAError from './components/pages/coa/CoAError';
+
+import Profile from './components/pages/profile/Profile';
+import ProfileError from './components/pages/profile/ProfileError';
 
 import CreateCoA from './components/pages/CreateCoA';
 
@@ -48,6 +52,14 @@ const router = createBrowserRouter(
         />
       </Route>
 
+      <Route path='/profile' element={<ProfileLayout />}>
+        <Route 
+          path=':id'
+          element={<Profile />}
+          errorElement={<ProfileError />}
+        />
+      </Route>
+
       {/* --- DEFAULT ROUT FOR NON EXISTING ROUTES --- */}
       <Route path='*' element={<NotFound />} />
     </Route>
@@ -55,6 +67,7 @@ const router = createBrowserRouter(
 );
 
 function App() {
+
   return (
     <RouterProvider router={router} />
   );

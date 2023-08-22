@@ -47,6 +47,6 @@ main().catch((error) => {
 
 // npx hardhat run --network sepolia scripts/deploy-token.js
 
-// 
+//  verify: npx hardhat verify --network sepolia 0x7D945e32D2B9C2c52b7388e2CD2764A0Cc666FBc
 
 // etherscan: https://sepolia.etherscan.io/address/0x7D945e32D2B9C2c52b7388e2CD2764A0Cc666FBc#code
