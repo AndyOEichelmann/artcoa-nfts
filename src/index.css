@@ -281,3 +281,20 @@ form label span {
 .coa-history h3{
   margin: 10px;
 }
+
+
+.coa-blockdata{
+  grid-column: 1 / 3;
+  grid-row: 4;
+}
+
+.coa-blockdata h5{
+  margin: 10px 15px;
+}
+
+.coa-blockdata div {
+  margin-bottom: 10px;
+
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}

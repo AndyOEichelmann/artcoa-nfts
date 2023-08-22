@@ -65,7 +65,7 @@ export const coaLoader = async ({ params }) => {
         ],
         fromBlock: 'earliest'
     })
-    console.log("logs: ",logs)
+    // console.log("logs: ",logs)
   
     // generate the ledger
     let ledger = [];
@@ -82,12 +82,14 @@ export const coaLoader = async ({ params }) => {
 
         ledger.push(hystory);
     })
-    console.log("ledger: ",ledger);
+    // console.log("ledger: ",ledger);
     
     const res = await alchemy.nft.getNftMetadata(arg[0], arg[1]);
-    console.log("res:",res);
+    // console.log("res:",res);
     
     const coa = await res.rawMetadata;
+
+    const coaname = await res.contract.name;
     
     // retrive token owner
     const owner = await proxycontract.ownerOf(arg[1]);
@@ -95,5 +97,5 @@ export const coaLoader = async ({ params }) => {
     // retrive token date
     const date = Date.parse(res.timeLastUpdated);
 
-    return { coa: coa, owner: owner, date: date, ledger: ledger };
+    return { coa: coa, coaname: coaname, owner: owner, date: date, ledger: ledger };
 }
