@@ -1,11 +1,16 @@
+import { useContext } from 'react';
 import { useParams } from 'react-router-dom';
 
-function Profile() {
-    const { id } = useParams();
+import AccountContext from '../../../context/AccountContext';
 
+function Profile() {
+  const { id } = useParams();
+  
+  const { acc, sig } = useContext(AccountContext);
+  
   return (
     <div>
-        <h4>{id}</h4>
+        <h4>{id}</h4>     
     </div>
   )
 }

@@ -1,28 +1,26 @@
-// import { ethers } from 'ethers';
+import { ethers } from 'ethers';
 import { useContext, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 
 import AccountContext from '../../context/AccountContext';
 
 const Navbar = () => {
-    const { acc, setAcc } = useContext(AccountContext);
-
-    const [account, setAccount] = useState(null);
+    const { acc, setAcc, setSig } = useContext(AccountContext);
 
     // MetaMask Login/Connect
     const web3Handler = async () => {
         // Get metamask account
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        const account = accounts[0];
 
-        // Set account onfo for display
-        setAccount(accounts[0]);
         setAcc({ account });
       
         // Get provider from metamask
-            // const provider = await new ethers.BrowserProvider(window.ethereum);
+        const provider = await new ethers.BrowserProvider(window.ethereum);
 
         // Get the signer
-            // const signer = await provider.getSigner();
+        const signer = await provider.getSigner();
+        setSig({ signer });
     }
 
     return (

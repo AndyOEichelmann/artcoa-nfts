@@ -46,11 +46,11 @@ contract ERC721CoA_Escrow is ERC721Holder, Context, ReentrancyGuard, Ownable{
     //                            EVENTS
     // =============================================================
 
-    event ItemListed (uint256 itemId, address indexed nftContract, uint256 tokenId, address indexed lister, address indexed claimer);
+    event ItemListed (uint256 itemId, address indexed nftContract, uint256 indexed tokenId, address lister, address indexed claimer);
 
-    event ItemClaimed (uint256 itemId, address indexed nftContract, uint256 tokenId, address indexed claimer);
+    event ItemClaimed (uint256 itemId, address indexed nftContract, uint256 indexed tokenId, address indexed claimer);
 
-    event ItemUnlisted (uint256 itemId, address indexed nftContract, uint256 tokenId, address indexed unlister);
+    event ItemUnlisted (uint256 itemId, address indexed nftContract, uint256 indexed tokenId, address indexed unlister);
 
     // =============================================================
     //                     MODIFIER FUNCTIONS

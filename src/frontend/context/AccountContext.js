@@ -4,9 +4,10 @@ const AccountContext = createContext({});
 
 export const AccountProvider = ({ children }) => {
     const [acc, setAcc] = useState({});
+    const [sig, setSig] = useState({});
 
     return (
-        <AccountContext.Provider value={{ acc, setAcc }}>
+        <AccountContext.Provider value={{ acc, setAcc, sig, setSig }}>
             {children}
         </AccountContext.Provider>
     )
