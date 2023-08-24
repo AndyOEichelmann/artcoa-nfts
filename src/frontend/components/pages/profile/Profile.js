@@ -10,7 +10,8 @@ function Profile() {
   
   return (
     <div>
-        <h4>{id}</h4>     
+        <h4>{id}</h4>
+        {console.log(acc)}     
     </div>
   )
 }
