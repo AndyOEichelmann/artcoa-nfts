@@ -1,3 +1,4 @@
+import { ethers } from 'ethers';
 import { useContext, useState } from 'react';
 // import { Form } from 'react-router-dom';
 
@@ -11,11 +12,11 @@ export default function CreateCoA() {
 
     const { acc, sig } = useContext(AccountContext);
 
-
     // parameters
         // immage data
     const [img, setImg] = useState(null);
     const [fileName, setFileName] = useState('No set file name');
+    const [imgFile, setImgFile] = useState(null);
         // object type
     const [type, setType] = useState('');
         // work title
@@ -42,6 +43,7 @@ export default function CreateCoA() {
             // signature data
     const [iSig, setISig] = useState(null);
     const [iSigName, setISigName] = useState('No issuer signature name');
+    const [iSigFile, setISigFile] = useState(null);
 
     // auth 
     const [auth, setAuth] = useState('');
@@ -49,7 +51,19 @@ export default function CreateCoA() {
     async function uploadMetadataIPFS() {
 
         // upload img to ipfs & retrive cid
-        const image = "ipfs://image-CID";
+        let image = "ipfs://image-CID";
+
+        try {
+            const res = await uploadFileToIPFS(imgFile, title);
+            if(res.success === true){
+                console.log("uploaded to piniata:", res.piniataCID)
+                image = `ipfs://${res.piniataCID}`;
+                console.log('set image:', image);
+            }
+        } catch(e) {
+            console.log('Error during file upload:', e)
+        }
+
 
         // set up dimensions
         let dValue = [];
@@ -87,7 +101,18 @@ export default function CreateCoA() {
         properties.push(edition);
 
         // upload isuer signature to ipfs
-        const signature = "ipfs://issuer-signature-CID";
+        let signature = "ipfs://issuer-signature-CID";
+        
+        try {
+            const res = await uploadFileToIPFS(iSigFile, iSigName);
+            if(res.success === true){
+                console.log("uploaded to piniata:", res.piniataCID)
+                signature = `ipfs://${res.piniataCID}`;
+                console.log('set image:', signature);
+            }
+        } catch(e) {
+            console.log('Error during file upload:', e)
+        }
 
         // create issuer
         const issuer ={
@@ -111,9 +136,34 @@ export default function CreateCoA() {
         metadata.issuers = issuers;
 
         // upload metadata tu ipfs
-        console.log('metadata:', metadata);
+        // console.log('metadata:', JSON.stringify(metadata));
+        
+        let metadataURI = 'ipfs://metadataURI';
+
+        try {
+            const res = await uploadJSONToIPFS(JSON.stringify(metadata));
+            if(res.success === true){
+                console.log("uploaded to piniata:", res.piniataCID)
+                metadataURI = `ipfs://${res.piniataCID}`;
+                console.log('set image:', metadataURI);
+            }
+        } catch(e) {
+            console.log('Error during file upload:', e)
+        }
 
         // upload artwork fingerprint to ipfs
+        let authURI = 'ipfs://authURI';
+        
+        try {
+            const res = await uploadJSONToIPFS(JSON.stringify(auth));
+            if(res.success === true){
+                console.log("uploaded to piniata:", res.piniataCID)
+                authURI = `ipfs://${res.piniataCID}`;
+                console.log('set image:', authURI);
+            }
+        } catch(e) {
+            console.log('Error during file upload:', e)
+        }
     }
 
     async function mintNFT(e) {
@@ -128,17 +178,19 @@ export default function CreateCoA() {
         <div>
             <h2>Create Certificate</h2>
             <form className='coa-form'>
+                {/* --- object image --- */}
                 <label 
                     className='form-img'
                     onClick={() => document.querySelector('.input-field')}
                 >
                     <input type="file" accept='image/*' className='input-field' hidden 
                         onChange={({ target: {files} }) => {
-                            files[0] && setFileName(files[0].name)
-                            console.log('uploaded img:', files)
-                            if(files){
-                                console.log('image url:', URL.createObjectURL(files[0]))
+                            if(files[0]){
+                                setImgFile(files[0]) && setFileName(files[0].name)
+                                console.log('uploaded img:', files)
+
                                 setImg(URL.createObjectURL(files[0]))
+                                console.log('image url:', URL.createObjectURL(files[0]))
                             }
                         }}
                     />
@@ -163,7 +215,7 @@ export default function CreateCoA() {
                         {/* title */}
                     <div>
                         <label htmlFor='title'>*Work title</label>
-                        <input type="text" required name='title' placeholder='artowork title' 
+                        <input type="text" required name='title' placeholder='object title' 
                             onChange={e => setTitile(e.target.value)}
                             value={title}
                         />
@@ -302,11 +354,12 @@ export default function CreateCoA() {
                             >
                             <input type="file" accept='image/*' className='signature-field' hidden 
                                 onChange={({ target: {files} }) => {
-                                    files[0] && setISigName(files[0].name)
-                                    console.log('uploaded img:', files)
-                                    if(files){
-                                        console.log('image url:', URL.createObjectURL(files[0]))
+                                    if(files[0]){
+                                        setISigFile(files[0]) && setISigName(files[0].name)
+                                        console.log('uploaded signature:', files)
+        
                                         setISig(URL.createObjectURL(files[0]))
+                                        console.log('signature url:', URL.createObjectURL(files[0]))
                                     }
                                 }}
                                 />
@@ -338,8 +391,12 @@ export default function CreateCoA() {
                         </section>
                     </div>
                 </div>
-
-                <button onClick={mintNFT} >Create Certificate</button>
+                
+                { imgFile && type !== '' && title !== '' && artist !== '' && description !== '' && date !== {} && length !== {} && heigth !== {} && unit !== {} && medium !== {} && edType !== {} && auth !== '' && iName !== '' && iType !== '' && iSigFile
+                    ? <button onClick={mintNFT} >Create Certificate</button>
+                    : <p>Fill all elemets marked with an *asterix </p>
+                }
+                
             </form>
         </div>
     )

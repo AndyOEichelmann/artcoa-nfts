@@ -1,14 +1,33 @@
-const key = process.env.REACT_APP_PINIATA_API_KEY;
-const secret = process.env.REACT_APP_PINIATA_API_SECRET;
-
 const axios = require('axios');
 const FormData = require('form-data');
 
+const key = process.env.REACT_APP_PINIATA_API_KEY;
+const secret = process.env.REACT_APP_PINIATA_API_SECRET;
+const JWT = process.env.REACT_APP_PINIATA_JWT;
+
 export const uploadJSONToIPFS = async(JSONBody) => {
-    const url = `https://api.pinata.cloud/pinning/pinJSONToIPFS`;
-    //making axios POST request to Pinata ⬇️
-    return axios 
-        .post(url, JSONBody, {
+    const url = `https://api.pinata.cloud/pinning/pinFileToIPFS`;
+    
+    // axios upload to ipfs
+    try{ 
+        const res = await axios.post(url, JSONBody, {
+            maxBodyLength: "Infinity",
+            headers: {
+                pinata_api_key: key,
+                pinata_secret_api_key: secret,
+            }
+        });
+        console.log(res.data);
+    } catch (e) {
+        console.log(e)
+        return {
+            success: false,
+            message: e.message,
+        }
+    } 
+    
+    //making axios POST request to Pinata
+    /* return axios.post(url, JSONBody, {
             headers: {
                 pinata_api_key: key,
                 pinata_secret_api_key: secret,
@@ -26,9 +45,8 @@ export const uploadJSONToIPFS = async(JSONBody) => {
                 success: false,
                 message: error.message,
             }
-
-    });
-};
+        }); */
+}
 
 export const uploadFileToIPFS = async(file, name) => {
     const url = `https://api.pinata.cloud/pinning/pinFileToIPFS`;
@@ -48,8 +66,7 @@ export const uploadFileToIPFS = async(file, name) => {
     });
     data.append('pinataOptions', pinataOptions);
 
-    return axios 
-        .post(url, data, {
+    return axios.post(url, data, {
             maxBodyLength: 'Infinity',
             headers: {
                 'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
@@ -73,3 +90,5 @@ export const uploadFileToIPFS = async(file, name) => {
             }
         });
 }
+
+// fs not working && axios.post not identifyed
