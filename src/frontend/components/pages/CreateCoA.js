@@ -2,7 +2,7 @@ import { ethers } from 'ethers';
 import { useContext, useState } from 'react';
 // import { Form } from 'react-router-dom';
 
-import { sendJSONToIPFS, uploadFileToIPFS, uploadJSONToIPFS } from '../../apis/piniata';
+import { sendFileToIPFS, sendJSONToIPFS } from '../../apis/piniata';
 
 import AccountContext from '../../context/AccountContext';
 
@@ -15,7 +15,7 @@ export default function CreateCoA() {
     // parameters
         // immage data
     const [img, setImg] = useState(null);
-    const [fileName, setFileName] = useState('No set file name');
+    const [fileName, setFileName] = useState('No set image file name');
     const [imgFile, setImgFile] = useState(null);
         // object type
     const [type, setType] = useState('');
@@ -51,9 +51,7 @@ export default function CreateCoA() {
     async function uploadMetadataIPFS() {
 
         // upload img to ipfs & retrive cid
-        let image = "ipfs://image-CID";
-
-        console.log('img file:', imgFile)
+        const image = await sendFileToIPFS(imgFile);
 
         // set up dimensions
         let dValue = [];
@@ -91,7 +89,7 @@ export default function CreateCoA() {
         properties.push(edition);
 
         // upload isuer signature to ipfs
-        let signature = "ipfs://issuer-signature-CID";
+        let signature = await sendFileToIPFS(iSigFile);
         
         // create issuer
         const issuer ={
@@ -115,25 +113,48 @@ export default function CreateCoA() {
         metadata.issuers = issuers;
 
         // upload metadata tu ipfs
-        // console.log('metadata:', JSON.stringify(metadata));
-        
-        // let metadataURI = 'ipfs://metadataURI';
-        const metadataURI = await sendJSONToIPFS(metadata);
+        const metadataURI = await sendJSONToIPFS(metadata, `metadata-${artist.replaceAll(' ', '')}-${title.replaceAll(' ', '')}.json`);
+            // console.log('metadata uri:', metadataURI)
 
         // upload artwork fingerprint to ipfs
-        let authURI = 'ipfs://authURI';
+        const authentication = {
+            type: "authentification",
+            properties: [
+                {
+                    trait_type: "Description",
+                    value: auth
+                }
+            ]
+        }
+
+        let authURI = await sendJSONToIPFS(authentication, `auth-${artist.replaceAll(' ', '')}-${title.replaceAll(' ', '')}.json`);
+            // console.log('auth uri:',authURI);
         
-        return metadataURI;
+        return {metadataURI, authURI};
     }
 
     async function mintNFT(e) {
         e.preventDefault();
 
-        const metadataURI = await uploadMetadataIPFS();
-
-        console.log('metadataURI:',await metadataURI);
+        const data = await uploadMetadataIPFS();
+        console.log('data:',data);
 
         // mint nft with relevant data
+        try{
+            // obtain information tu upload
+
+            // verify & grant roll
+
+            // mint token
+
+            // clean parameters
+
+            // redirect user to desired url : window.location.replace("/") || reactRowterDOM {return redirect('/')}
+
+        } catch (error) {
+            console.log('mint error: ',error);
+            alert("create error: "+error);
+        }
     }
 
     return (
@@ -354,7 +375,7 @@ export default function CreateCoA() {
                     </div>
                 </div>
                 
-                { imgFile && type !== '' && title !== '' && artist !== '' && description !== '' && date !== {} && length !== {} && heigth !== {} && unit !== {} && medium !== {} && edType !== {} && auth !== '' && iName !== '' && iType !== '' && iSigFile
+                { imgFile && type !== '' && title !== '' && artist !== '' && description !== '' && date !== {} && length !== {} && heigth !== {} && unit !== {} && medium !== {} && edType !== {} && auth !== '' && iName !== '' && iType !== '' && iSigFile && acc.account
                     ? <button onClick={mintNFT} >Create Certificate</button>
                     : <p>Fill all elemets marked with an *asterix </p>
                 }

@@ -9,7 +9,7 @@ const network = 'sepolia';
 const alchemyProvider = new ethers.AlchemyProvider(network, process.env.REACT_APP_ALCHEMY_API_KEY);
 
 // Configure signer
-const signer = new ethers.Wallet(process.env.REACT_APP_SEPOLIA_PRIVATE_KEY , alchemyProvider);
+const signer = new ethers.Wallet(process.env.REACT_APP_SEPOLIA_PRIVATE_KEY, alchemyProvider);
 
 // Configuration the Alchemy SDK
 const config = {
@@ -45,6 +45,7 @@ export const galleryLoader = async () => {
 }
 
 export const coaLoader = async ({ params }) => {
+    console.log('fetch signer:' ,signer);
 
     const { id } = params;
 

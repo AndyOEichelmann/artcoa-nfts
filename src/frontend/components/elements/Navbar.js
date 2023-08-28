@@ -41,6 +41,7 @@ const Navbar = () => {
             // Get the signer
             const signer = await provider.getSigner();
             setSig({ signer });
+            console.log('metamask signer:', signer)
         }
     }
 

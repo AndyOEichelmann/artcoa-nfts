@@ -98,25 +98,25 @@ const JWT = process.env.REACT_APP_PINIATA_JWT;
     }
 */
 
-export async function sendJSONToIPFS (jsonMetadata) {
+export async function sendJSONToIPFS (jsonMetadata, name) {
     const url = 'https://api.pinata.cloud/pinning/pinJSONToIPFS';
 
     /* ---  --- */
+    const options = {
+        method: 'POST',
+        headers: {
+            accept: 'application/json',
+            'content-type': 'application/json',
+            authorization: `Bearer ${JWT}`
+        },
+        body: JSON.stringify({
+            pinataContent: jsonMetadata,
+            pinataOptions: {cidVersion: 0, wrapWithDirectory: false},
+            pinataMetadata: {name: name}
+        })
+    }
+    
     try{
-        const options = {
-            method: 'POST',
-            headers: {
-                accept: 'application/json',
-                'content-type': 'application/json',
-                authorization: `Bearer ${JWT}`
-            },
-            body: JSON.stringify({
-                pinataContent: jsonMetadata,
-                pinataOptions: {cidVersion: 0, wrapWithDirectory: false},
-                pinataMetadata: {name: 'coametadata.json'}
-            })
-        }
-        
         const res = await fetch(url, options);
         const resData = await res.json();
         return `ipfs://${resData.IpfsHash}`
@@ -125,6 +125,37 @@ export async function sendJSONToIPFS (jsonMetadata) {
         return error;
     }
         /* --- --- */
+}
+
+export async function sendFileToIPFS(file) {
+    const url = 'https://api.pinata.cloud/pinning/pinFileToIPFS';
+
+    /* --- --- */
+    const form = new FormData();
+    form.append('cidVersion', '0');
+    form.append('wrapWithDirectory', 'false');
+    form.append('file', file);
+
+    const options = {
+        method: 'POST',
+        headers: {
+            accept: 'application/json',
+            authorization: `Bearer ${JWT}`
+        }
+    };
+      
+    options.body = form;
+      
+    try{
+        const res = await fetch(url, options);
+        const resData = await res.json();
+        return `ipfs://${resData.IpfsHash}`
+    } catch (error) {
+        console.log(error);
+        return error;
+    }
+       /* --- --- */
+
 }
 
 // fs not working && axios.post not identifyed
