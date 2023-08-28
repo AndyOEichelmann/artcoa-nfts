@@ -1,11 +1,18 @@
-const axios = require('axios');
+const axios = require("axios");
+
+const fetch = require("node-fetch");
+
 const FormData = require('form-data');
+// const fs = require('fs')
 
 const key = process.env.REACT_APP_PINIATA_API_KEY;
 const secret = process.env.REACT_APP_PINIATA_API_SECRET;
 const JWT = process.env.REACT_APP_PINIATA_JWT;
 
-export const uploadJSONToIPFS = async(JSONBody) => {
+// functions
+
+/*
+    export const uploadJSONToIPFS = async(JSONBody) => {
     const url = `https://api.pinata.cloud/pinning/pinFileToIPFS`;
     
     // axios upload to ipfs
@@ -27,7 +34,7 @@ export const uploadJSONToIPFS = async(JSONBody) => {
     } 
     
     //making axios POST request to Pinata
-    /* return axios.post(url, JSONBody, {
+    return axios.post(url, JSONBody, {
             headers: {
                 pinata_api_key: key,
                 pinata_secret_api_key: secret,
@@ -45,18 +52,17 @@ export const uploadJSONToIPFS = async(JSONBody) => {
                 success: false,
                 message: error.message,
             }
-        }); */
-}
+        });
+    }
 
-export const uploadFileToIPFS = async(file, name) => {
+    export const uploadFileToIPFS = async(file, name) => {
     const url = `https://api.pinata.cloud/pinning/pinFileToIPFS`;
     
-    { /* --- making axios POST request to Pinata --- */ }
     let data = new FormData();
     data.append('file', file);
 
     const metadata = JSON.stringify({
-        name: name,
+        name: "listdata",
     });
     data.append('pinataMetadata', metadata);
 
@@ -89,6 +95,36 @@ export const uploadFileToIPFS = async(file, name) => {
                 message: error.message,
             }
         });
+    }
+*/
+
+export async function sendJSONToIPFS (jsonMetadata) {
+    const url = 'https://api.pinata.cloud/pinning/pinJSONToIPFS';
+
+    /* ---  --- */
+    try{
+        const options = {
+            method: 'POST',
+            headers: {
+                accept: 'application/json',
+                'content-type': 'application/json',
+                authorization: `Bearer ${JWT}`
+            },
+            body: JSON.stringify({
+                pinataContent: jsonMetadata,
+                pinataOptions: {cidVersion: 0, wrapWithDirectory: false},
+                pinataMetadata: {name: 'coametadata.json'}
+            })
+        }
+        
+        const res = await fetch(url, options);
+        const resData = await res.json();
+        return `ipfs://${resData.IpfsHash}`
+    } catch (error) {
+        console.log(error);
+        return error;
+    }
+        /* --- --- */
 }
 
 // fs not working && axios.post not identifyed

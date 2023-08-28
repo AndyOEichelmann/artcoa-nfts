@@ -2,7 +2,7 @@ import { ethers } from 'ethers';
 import { useContext, useState } from 'react';
 // import { Form } from 'react-router-dom';
 
-import { uploadFileToIPFS, uploadJSONToIPFS } from '../../apis/piniata';
+import { sendJSONToIPFS, uploadFileToIPFS, uploadJSONToIPFS } from '../../apis/piniata';
 
 import AccountContext from '../../context/AccountContext';
 
@@ -53,17 +53,7 @@ export default function CreateCoA() {
         // upload img to ipfs & retrive cid
         let image = "ipfs://image-CID";
 
-        try {
-            const res = await uploadFileToIPFS(imgFile, title);
-            if(res.success === true){
-                console.log("uploaded to piniata:", res.piniataCID)
-                image = `ipfs://${res.piniataCID}`;
-                console.log('set image:', image);
-            }
-        } catch(e) {
-            console.log('Error during file upload:', e)
-        }
-
+        console.log('img file:', imgFile)
 
         // set up dimensions
         let dValue = [];
@@ -103,17 +93,6 @@ export default function CreateCoA() {
         // upload isuer signature to ipfs
         let signature = "ipfs://issuer-signature-CID";
         
-        try {
-            const res = await uploadFileToIPFS(iSigFile, iSigName);
-            if(res.success === true){
-                console.log("uploaded to piniata:", res.piniataCID)
-                signature = `ipfs://${res.piniataCID}`;
-                console.log('set image:', signature);
-            }
-        } catch(e) {
-            console.log('Error during file upload:', e)
-        }
-
         // create issuer
         const issuer ={
             name: `${iName}`,
@@ -138,38 +117,21 @@ export default function CreateCoA() {
         // upload metadata tu ipfs
         // console.log('metadata:', JSON.stringify(metadata));
         
-        let metadataURI = 'ipfs://metadataURI';
-
-        try {
-            const res = await uploadJSONToIPFS(JSON.stringify(metadata));
-            if(res.success === true){
-                console.log("uploaded to piniata:", res.piniataCID)
-                metadataURI = `ipfs://${res.piniataCID}`;
-                console.log('set image:', metadataURI);
-            }
-        } catch(e) {
-            console.log('Error during file upload:', e)
-        }
+        // let metadataURI = 'ipfs://metadataURI';
+        const metadataURI = await sendJSONToIPFS(metadata);
 
         // upload artwork fingerprint to ipfs
         let authURI = 'ipfs://authURI';
         
-        try {
-            const res = await uploadJSONToIPFS(JSON.stringify(auth));
-            if(res.success === true){
-                console.log("uploaded to piniata:", res.piniataCID)
-                authURI = `ipfs://${res.piniataCID}`;
-                console.log('set image:', authURI);
-            }
-        } catch(e) {
-            console.log('Error during file upload:', e)
-        }
+        return metadataURI;
     }
 
     async function mintNFT(e) {
         e.preventDefault();
 
-        uploadMetadataIPFS();
+        const metadataURI = await uploadMetadataIPFS();
+
+        console.log('metadataURI:',await metadataURI);
 
         // mint nft with relevant data
     }
@@ -304,7 +266,7 @@ export default function CreateCoA() {
                         <div>
                             <label htmlFor="eddition-cuantity">cuantity</label>
                             <input type="number" name='cuantity' placeholder='cuantity' 
-                                onChange={e => setEdCuantity({...edCuantity,
+                                onChange={e => setEdCuantity({
                                     trait_type: "cuantity",
                                     value: e.target.value
                                 })}
@@ -315,7 +277,7 @@ export default function CreateCoA() {
                         <div>
                             <label htmlFor="eddition-number">number</label>
                             <input type="number" name='number' placeholder='number' 
-                                onChange={e => setEdNumber({...edNumber,
+                                onChange={e => setEdNumber({
                                     trait_type:'number',
                                     value: e.target.value
                                 })}
