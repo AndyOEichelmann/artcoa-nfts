@@ -20,7 +20,7 @@ import CreateCoA from './components/pages/CreateCoA';
 import NotFound from './components/pages/NotFound';
 
 // loaders
-import { coaLoader, galleryLoader } from './loaders & actions/CoALoader';
+import { coaLoader, galleryLoader, profileLoader } from './loaders & actions/CoALoader';
 
 // import logo from './logo.svg';
 
@@ -56,6 +56,7 @@ const router = createBrowserRouter(
         <Route 
           path=':id'
           element={<Profile />}
+          loader={profileLoader}
           errorElement={<ProfileError />}
         />
       </Route>

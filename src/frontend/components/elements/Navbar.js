@@ -57,7 +57,7 @@ const Navbar = () => {
         if(window.ethereum.isConnected()) {
             getAddress();
         }
-    });
+    }, []);
 
     return (
         <nav className="navbar">

@@ -28,10 +28,6 @@ export const galleryLoader = async () => {
     
     const res = await alchemy.nft.getNftsForContract(address);
     // console.log(res.nextToken)
-
-    // if (!res.ok) {
-        //   throw Error('Culd not fetch certificates data');
-    // }
         
     const acoa = await res.nfts;
 
@@ -43,6 +39,19 @@ export const galleryLoader = async () => {
     });
 
     return { acoa: acoa, unique: await unique }
+}
+
+export const profileLoader = async ({ params }) => {
+    const { id } = params;
+
+    const address = "0x7D945e32D2B9C2c52b7388e2CD2764A0Cc666FBc";
+
+    const res = await alchemy.nft.getNftsForOwner(id,{contractAddresses: [address]})
+    
+    const ownedCoAs = await res.ownedNfts;
+        // console.log('owned coas:',ownedCoAs)
+
+    return ownedCoAs;
 }
 
 export const coaLoader = async ({ params }) => {
