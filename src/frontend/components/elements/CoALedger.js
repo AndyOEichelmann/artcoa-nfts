@@ -21,7 +21,6 @@ const CoALedger = ({ ledger }) => {
             <h4>To</h4>
         </section>
         <section className="ledger-data">
-
             {
                 ledger.map(e => (
                     renderItem(e)

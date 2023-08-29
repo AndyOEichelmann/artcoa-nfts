@@ -1,16 +1,22 @@
 import { ethers } from 'ethers';
 import { useContext, useState } from 'react';
-// import { Form } from 'react-router-dom';
+// import { NavLink } from 'react-router-dom';
 
 import { sendFileToIPFS, sendJSONToIPFS } from '../../apis/piniata';
 
 import AccountContext from '../../context/AccountContext';
 
+import contractaddress from '../../contract-data/ERC721CoA-address.json';
+import contractabi from '../../contract-data/ERC721CoA.json';
+
 
 
 export default function CreateCoA() {
 
-    const { acc, sig } = useContext(AccountContext);
+    const { acc } = useContext(AccountContext);
+
+    // message
+    const [msg, setMsg] = useState('');
 
     // parameters
         // immage data
@@ -136,25 +142,52 @@ export default function CreateCoA() {
     async function mintNFT(e) {
         e.preventDefault();
 
-        const data = await uploadMetadataIPFS();
-        console.log('data:',data);
-
         // mint nft with relevant data
         try{
+            // provide uploading message
+            setMsg('Plis wait, uploading will take upto 5 minutes');
+
             // obtain information tu upload
+                // url - metadata & authentification
+            const data = await uploadMetadataIPFS();
+            console.log('data:',data);
+                // get web provider - metamask
+            const provider = await new ethers.BrowserProvider(window.ethereum);
 
+                // get signer
+            const signer = await provider.getSigner();
+
+                // set up proxy contract
+            const coacontract = new ethers.Contract(contractaddress.address, contractabi.abi, signer);
+            
             // verify & grant roll
+                // obtain the role type
+            const roleMint = await coacontract.MINTER_ROLE();
+            
+                // verify that user has roll - if not grant roll w admin account
+            const hasRoll = await coacontract.hasRole(roleMint, acc.account);
+            
+            if(hasRoll){
+                // mint token
+                const mint = await coacontract.safeMintTo(acc.account, data.metadataURI, data.authURI, artist, title);
+                await mint.wait();
+            }
 
-            // mint token
-
-            // clean parameters
+            // alert and clean parameters
+            alert('CoA creation wass succesfull');
+            setMsg('');
 
             // redirect user to desired url : window.location.replace("/") || reactRowterDOM {return redirect('/')}
-
+            window.location.replace("/");
+            
         } catch (error) {
             console.log('mint error: ',error);
             alert("create error: "+error);
         }
+    }
+
+    function changeMsg(){
+        setMsg('');
     }
 
     return (
@@ -379,8 +412,23 @@ export default function CreateCoA() {
                     ? <button onClick={mintNFT} >Create Certificate</button>
                     : <p>Fill all elemets marked with an *asterix </p>
                 }
-                
+
             </form>
+
+            { msg !== '' && 
+                <div className='overlay'>
+                    <div className="pupup">
+                        <div>
+                            <h3>Atencion</h3>
+                            <button onClick={changeMsg}>x</button>
+                        </div>
+                        <p>{msg}</p>
+                        {/* <NavLink to="/">Return Home</NavLink> */}
+                    </div>
+                </div>
+            }
+            
+
         </div>
     )
 }

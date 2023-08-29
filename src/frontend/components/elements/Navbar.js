@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { useContext, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 
 import AccountContext from '../../context/AccountContext';
@@ -29,21 +29,35 @@ const Navbar = () => {
         }
 
         if(isMetaMask){
+            // verify that the wallet is conected to the correct chain
+            const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+            if(chainId !== '0xaa36a7'){
+                await window.ethereum.request({
+                    method: "wallet_switchEthereumChain",
+                    params: [{ chainId: "0xaa36a7" }]
+                });
+            }
+
             // Get metamask account
             const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
             const account = accounts[0];
             
             setAcc({ account });
-            
-            // Get provider from metamask
-            const provider = await new ethers.BrowserProvider(window.ethereum);
-            
-            // Get the signer
-            const signer = await provider.getSigner();
-            setSig({ signer });
-            console.log('metamask signer:', signer)
         }
     }
+
+    async function getAddress() {
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        const account = accounts[0];
+        
+        setAcc({ account });
+    }
+
+    useEffect(() => {
+        if(window.ethereum.isConnected()) {
+            getAddress();
+        }
+    });
 
     return (
         <nav className="navbar">

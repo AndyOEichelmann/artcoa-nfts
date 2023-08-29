@@ -1,5 +1,6 @@
 const { Alchemy, Network } = require("alchemy-sdk");
 const { ethers } = require('ethers');
+
 const contract = require("../contract-data/ERC721CoA.json")
 
 // netowork
@@ -45,7 +46,7 @@ export const galleryLoader = async () => {
 }
 
 export const coaLoader = async ({ params }) => {
-    console.log('fetch signer:' ,signer);
+    // console.log('fetch signer:' ,signer);
 
     const { id } = params;
 
@@ -99,4 +100,23 @@ export const coaLoader = async ({ params }) => {
     const date = Date.parse(res.timeLastUpdated);
 
     return { coa: coa, coaname: coaname, owner: owner, date: date, ledger: ledger };
+}
+
+export const setMinter = async (minter) => {
+
+        // contract address whose NFTs you want to fetch
+        const address = "0x7D945e32D2B9C2c52b7388e2CD2764A0Cc666FBc";
+
+        const proxycontract = new ethers.Contract(address, contract.abi, signer);
+
+        // set minter
+        const roleMint = await proxycontract.MINTER_ROLE();
+        const hasRoll = await proxycontract.hasRole(roleMint, minter);
+        if(!hasRoll){
+            await proxycontract.grantRole(roleMint, minter.address);
+            console.log('minter roll granted')
+        }
+
+        // minter roll
+        console.log('minter rooll:', true)
 }
