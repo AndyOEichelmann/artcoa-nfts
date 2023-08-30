@@ -4,7 +4,7 @@ const tokenURI = 'ipfs://';
 
 async function main() {
     
-  // deply ACoA nft contract
+  // deply CoA nft contract
   const CoA = await ethers.getContractFactory("ERC721CoA");
   const coa = await CoA.deploy();
 

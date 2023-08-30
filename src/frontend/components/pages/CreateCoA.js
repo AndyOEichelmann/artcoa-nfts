@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { useContext, useState } from 'react';
-// import { NavLink } from 'react-router-dom';
+import { redirect } from 'react-router-dom';
 
 import { sendFileToIPFS, sendJSONToIPFS } from '../../apis/piniata';
 
@@ -150,7 +150,7 @@ export default function CreateCoA() {
             // obtain information tu upload
                 // url - metadata & authentification
             const data = await uploadMetadataIPFS();
-            console.log('data:',data);
+                console.log('data:',data);
                 // get web provider - metamask
             const provider = await new ethers.BrowserProvider(window.ethereum);
 
@@ -167,10 +167,12 @@ export default function CreateCoA() {
                 // verify that user has roll - if not grant roll w admin account
             const hasRoll = await coacontract.hasRole(roleMint, acc.account);
             
-            if(hasRoll){
+            if(hasRoll && data.metadataURI !== undefined && data.authURI !== undefined){
                 // mint token
                 const mint = await coacontract.safeMintTo(acc.account, data.metadataURI, data.authURI, artist, title);
                 await mint.wait();
+            } else {
+                setMsg('could not create certificate');
             }
 
             // alert and clean parameters
@@ -179,6 +181,7 @@ export default function CreateCoA() {
 
             // redirect user to desired url : window.location.replace("/") || reactRowterDOM {return redirect('/')}
             window.location.replace("/");
+            // return redirect('/');
             
         } catch (error) {
             console.log('mint error: ',error);
@@ -427,8 +430,6 @@ export default function CreateCoA() {
                     </div>
                 </div>
             }
-            
-
         </div>
     )
 }

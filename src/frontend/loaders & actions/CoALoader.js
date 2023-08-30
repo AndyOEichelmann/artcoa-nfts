@@ -53,6 +53,9 @@ export const profileLoader = async ({ params }) => {
 
     const address = "0x7D945e32D2B9C2c52b7388e2CD2764A0Cc666FBc";
 
+    const escrow = "0xFF13f21abd8A17337039219d794FDB0330047a09";
+
+    /* --- retrive owned nfts --- */
     const res = await alchemy.nft.getNftsForOwner(id,{contractAddresses: [address]})
 
     const nfts = await res.ownedNfts;
@@ -63,7 +66,38 @@ export const profileLoader = async ({ params }) => {
             ownedCoAs.push(element);
         }
     });
-        // console.log('owned coas:',ownedCoAs)
+    
+    
+    /* --- retrive all climable listed tokens  --- */
+    const user = id.slice(2);
+
+        const logs = await alchemy.core.getLogs({
+        address: escrow,
+        topics: [
+            "0x1361183d3619b83f772e8c55c1fb823a1d95ee5f906e8dd77a4ca29dfccaf03d",
+            null,
+            null,
+            `0x${user.padStart(64,0)}`
+        ],
+        fromBlock: 'earliest'
+    })
+
+    console.log('listed items logs:', logs)
+    logs.forEach( e => {
+        // obtain item id
+        const itemId = ethers.AbiCoder.defaultAbiCoder().decode(['uint256','address'], e.data)[0];
+            console.log('itemId:', itemId);
+        // verify listing status
+            console.log('token id conversion', Number(itemId))
+        // if it is listed save it in a array for climing with relevant data
+        const sender = ethers.AbiCoder.defaultAbiCoder().decode(['uint256','address'], e.data)[1];
+            console.log('sender:', sender);
+            // retrive metadata of token 
+        const coaaddress = ethers.AbiCoder.defaultAbiCoder().decode(['address'], e.topics[1])[0];
+            console.log('contact add:', coaaddress);
+        const tokenId = ethers.AbiCoder.defaultAbiCoder().decode(['address'], e.topics[2])[0];
+            console.log('token Id:', tokenId);
+    })
 
     return ownedCoAs;
 }
@@ -80,7 +114,7 @@ export const coaLoader = async ({ params }) => {
     const proxycontract = new ethers.Contract(arg[0], contract.abi, signer);
 
     // obtain all the transfer events from the contact for the token
-   const logs = await alchemy.core.getLogs({
+    const logs = await alchemy.core.getLogs({
         address: arg[0],
         topics: [
             "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",

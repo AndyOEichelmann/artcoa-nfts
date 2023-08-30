@@ -521,3 +521,45 @@ button:hover {
 
   grid-template-columns: repeat(2, 1fr);
 }
+
+.transfer-cert{
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.transfer-cert  form{
+  border: solid 1px #f1356d;
+  border-radius: 10px;
+
+  padding: 10px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.transfer-cert div{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+.transfer-cert input,
+.transfer-cert select{
+  grid-column: 2 / 4;
+  align-self: center;
+
+  border: 1px solid #e2e2e2;
+  background-color: #f2f2f2;
+
+  padding: 5px;
+
+  border-radius: 5px;
+}
+
+.formMsg{
+  margin: 5px auto;
+  padding: 5px 20px; 
+  
+  border: solid 1px lightgray;
+  border-radius: 10px;
+
+  color: #f1356d;
+}

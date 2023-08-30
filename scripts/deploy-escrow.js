@@ -1,5 +1,7 @@
 const { artifacts } = require('hardhat');
 
+
+
 async function main() {
 
   // deply CoA Escrow
@@ -9,15 +11,15 @@ async function main() {
   await coaescrow.waitForDeployment();
 
   console.log(
-    `Test ERC721ACoA deployed to ${coaescrow.target}`
+    `Test ERC721ACoAEscrow deployed to ${coaescrow.target}`
   );
 
-  saveFrontendFiles(coaescrow, "ERC721ACoA_coaescrow");
+  saveFrontendFiles(coaescrow, "ERC721CoA_Escrow");
 }
 
 function saveFrontendFiles(contract, name) {
   const fs = require('fs');
-  const contractsDir = __dirname + "/../../frontend/contractsData";
+  const contractsDir = __dirname + "/../src/frontend/contract-data";
 
   if(!fs.existsSync(contractsDir)) {
     fs.mkdirSync(contractsDir);
@@ -43,4 +45,8 @@ main().catch((error) => {
   process.exitCode = 1;
 });
 
-// verify: npx hardhat verify --network sepolia {address}
+// npx hardhat run --network sepolia scripts/deploy-escrow.js
+
+// verify: npx hardhat verify --network sepolia 0xFF13f21abd8A17337039219d794FDB0330047a09
+
+// etherscan: https://sepolia.etherscan.io/address/0xFF13f21abd8A17337039219d794FDB0330047a09#code
