@@ -9,7 +9,7 @@ function Profile() {
 
   const ownedCoAs = useLoaderData();
 
-  const { acc, sig } = useContext(AccountContext);
+  const { acc } = useContext(AccountContext);
   
   return (
     <div className='profile-info'>

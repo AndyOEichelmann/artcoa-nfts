@@ -54,7 +54,7 @@ const Navbar = () => {
     }
 
     useEffect(() => {
-        if(window.ethereum.isConnected()) {
+        if(injectedProvider && window.ethereum.isConnected()) {
             getAddress();
         }
     }, []);

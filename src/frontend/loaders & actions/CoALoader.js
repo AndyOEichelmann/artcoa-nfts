@@ -28,8 +28,15 @@ export const galleryLoader = async () => {
     
     const res = await alchemy.nft.getNftsForContract(address);
     // console.log(res.nextToken)
-        
-    const acoa = await res.nfts;
+
+    const nfts = await res.nfts;
+    
+    let acoa = [];
+    nfts.forEach(async element => {
+        if(element.rawMetadata.image !== undefined){
+            acoa.push(element);
+        }
+    });
 
     let unique = [];
     acoa.forEach(async element => {
@@ -47,8 +54,15 @@ export const profileLoader = async ({ params }) => {
     const address = "0x7D945e32D2B9C2c52b7388e2CD2764A0Cc666FBc";
 
     const res = await alchemy.nft.getNftsForOwner(id,{contractAddresses: [address]})
+
+    const nfts = await res.ownedNfts;
     
-    const ownedCoAs = await res.ownedNfts;
+    let ownedCoAs = [];
+    nfts.forEach(async element => {
+        if(element.rawMetadata.image !== undefined){
+            ownedCoAs.push(element);
+        }
+    });
         // console.log('owned coas:',ownedCoAs)
 
     return ownedCoAs;

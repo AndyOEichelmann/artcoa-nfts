@@ -6,7 +6,6 @@ const Gallery = ({ acoa }) => {
         <div className="gallery">
             {acoa.map((coa) => (
                 <Link 
-                    // to={'/certificate-' + coa.contract.address + '-' + coa.tokenId.toString()}
                     to={'/certificate/' + coa.contract.address + '-' + coa.tokenId}
 
                     className="coa-preview obj-img" 
