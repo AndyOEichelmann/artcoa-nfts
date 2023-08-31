@@ -563,3 +563,54 @@ button:hover {
 
   color: #f1356d;
 }
+
+/* --- claim cert table --- */
+.claim-certificate{
+  border: solid 1px lightgray;
+
+  border-radius: 10px;
+  overflow: clip;
+}
+
+.claim-certificate div{
+  padding: 5px 0px;
+
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.claim-certificate div h4,
+.claim-certificate div p,
+.claim-certificate div button {
+  justify-self: center;
+  align-self: center;
+}
+
+.claim-header{
+  background-color: #e2e2e2;
+}
+
+.item-img{
+  justify-self: center;
+  align-self: center;
+
+  width: 40px;
+  height: 40px;
+}
+
+.item-img img{
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  border-radius: 5px;
+}
+
+.claim-certificate button{
+  background-color: #f1356d;
+}
+
+.claim-certificate h4{
+  font-size: small;
+}

@@ -1,7 +1,8 @@
 const { Alchemy, Network } = require("alchemy-sdk");
 const { ethers } = require('ethers');
 
-const contract = require("../contract-data/ERC721CoA.json")
+const contract = require("../contract-data/ERC721CoA.json");
+const escrowabi = require('../contract-data/ERC721CoA_Escrow.json');
 
 // netowork
 const network = 'sepolia';
@@ -67,11 +68,12 @@ export const profileLoader = async ({ params }) => {
         }
     });
     
-    
     /* --- retrive all climable listed tokens  --- */
+    const escrowcoacontract = new ethers.Contract(escrow, escrowabi.abi, signer);
+
     const user = id.slice(2);
 
-        const logs = await alchemy.core.getLogs({
+    const logs = await alchemy.core.getLogs({
         address: escrow,
         topics: [
             "0x1361183d3619b83f772e8c55c1fb823a1d95ee5f906e8dd77a4ca29dfccaf03d",
@@ -82,24 +84,55 @@ export const profileLoader = async ({ params }) => {
         fromBlock: 'earliest'
     })
 
-    console.log('listed items logs:', logs)
-    logs.forEach( e => {
+        // console.log('listed items logs:', logs)
+    const claimItems = await logChecker(logs, escrowcoacontract);
+    
+    console.log('claimable items:', claimItems.length);
+
+    return {ownedCoAs: ownedCoAs, claimItem: claimItems};
+}
+
+async function logChecker(logs, escrowcoacontract){
+    const claimItems = [];
+
+    const items = logs.forEach(async e => {
         // obtain item id
-        const itemId = ethers.AbiCoder.defaultAbiCoder().decode(['uint256','address'], e.data)[0];
-            console.log('itemId:', itemId);
+        const itemId = Number(ethers.AbiCoder.defaultAbiCoder().decode(['uint256','address'], e.data)[0]);
+            // console.log('itemId:', itemId);
+
         // verify listing status
-            console.log('token id conversion', Number(itemId))
+        const status = await escrowcoacontract._itemsListed(itemId);
+            // console.log('->listed status:', Number(status.status));
+
         // if it is listed save it in a array for climing with relevant data
-        const sender = ethers.AbiCoder.defaultAbiCoder().decode(['uint256','address'], e.data)[1];
-            console.log('sender:', sender);
-            // retrive metadata of token 
-        const coaaddress = ethers.AbiCoder.defaultAbiCoder().decode(['address'], e.topics[1])[0];
-            console.log('contact add:', coaaddress);
-        const tokenId = ethers.AbiCoder.defaultAbiCoder().decode(['address'], e.topics[2])[0];
-            console.log('token Id:', tokenId);
+        if(Number(status.status) == 1){
+
+            const sender = ethers.AbiCoder.defaultAbiCoder().decode(['uint256','address'], e.data)[1];
+                // console.log('sender:', sender);
+            
+                // retrive metadata of token 
+            const coaaddress = ethers.AbiCoder.defaultAbiCoder().decode(['address'], e.topics[1])[0];
+                // console.log('contact add:', coaaddress);
+            const tokenId = ethers.AbiCoder.defaultAbiCoder().decode(['address'], e.topics[2])[0];
+                // console.log('token Id:', ethers.getNumber(tokenId));
+            const coa = await alchemy.nft.getNftMetadata(coaaddress, ethers.getNumber(tokenId));
+                // console.log('--- coa:', coa);
+
+            const item = {
+                sender: sender,
+                itemId: itemId,
+                coaaddress: coaaddress,
+                tokenId: ethers.getNumber(tokenId),
+                image: coa.rawMetadata.image,
+                titile: coa.title
+            };
+
+            claimItems.push(item)
+        }
+        console.log('--- climable items', claimItems)
     })
 
-    return ownedCoAs;
+    return claimItems;
 }
 
 export const coaLoader = async ({ params }) => {

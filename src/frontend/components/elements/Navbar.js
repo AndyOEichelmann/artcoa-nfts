@@ -1,5 +1,5 @@
-import { ethers } from 'ethers';
-import { useContext, useEffect } from 'react';
+// import { ethers } from 'ethers';
+import { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 
 import AccountContext from '../../context/AccountContext';
@@ -13,7 +13,7 @@ if(typeof window.ethereum !== 'undefined'){
 const isMetaMask = injectedProvider ? window.ethereum.isMetaMask : false;
 
 const Navbar = () => {
-    const { acc, setAcc, setSig } = useContext(AccountContext);
+    const { acc, setAcc } = useContext(AccountContext);
 
     // MetaMask Login/Connect
     const web3Handler = async () => {
@@ -45,19 +45,6 @@ const Navbar = () => {
             setAcc({ account });
         }
     }
-
-    async function getAddress() {
-        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-        const account = accounts[0];
-        
-        setAcc({ account });
-    }
-
-    useEffect(() => {
-        if(injectedProvider && window.ethereum.isConnected()) {
-            getAddress();
-        }
-    }, []);
 
     return (
         <nav className="navbar">

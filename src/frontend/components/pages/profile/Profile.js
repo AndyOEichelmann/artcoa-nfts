@@ -13,7 +13,8 @@ import escrowabi from '../../../contract-data/ERC721CoA_Escrow.json';
 function Profile() {
   const { id } = useParams();
 
-  const ownedCoAs = useLoaderData();
+  const {ownedCoAs, claimItem} = useLoaderData();
+    // console.log('loded:', claimItem.length)
 
   const { acc } = useContext(AccountContext);
 
@@ -75,6 +76,29 @@ function Profile() {
 
     // if not disply err message
   }
+
+  async function claimCoA(itemId) {
+    console.log('item id:', itemId);
+    try{
+      // obtain info to list coa
+        // get web provider - metamask
+        const provider = await new ethers.BrowserProvider(window.ethereum);
+
+        // get signer
+      const signer = await provider.getSigner();
+
+        // set up proxy for escrow contract
+      const escrowcoacontract = new ethers.Contract(escrowaddress.address, escrowabi.abi, signer);
+
+      // clim certificate
+      await escrowcoacontract.claimCertificate(itemId);
+
+      console.log('climed');
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
   
   return (
     <div className='profile-info'>
@@ -89,32 +113,71 @@ function Profile() {
       </section>
 
       {id === acc.account
-        && <section className='transfer-cert'>
-            <h3>List certificate to be transfered</h3>
+        ? <>
+            <section className='transfer-cert'>
+                <h3>List certificate to be transfered</h3>
 
-            <form id='listFor'>
-              {/* select certificate */}
-              <div>
-                <label name="certificate">Certificate</label>
-                <select name="certificate" id='coa'>
-                  <option value="">select</option>
-                  {ownedCoAs.map((coa) => {
-                    return(
-                      <option value={`${coa.contract.address}-${coa.tokenId}`} key={`${coa.contract.address}-${coa.tokenId}`}>{coa.title}</option>
-                    )
-                  })}
-                </select>
+                <form id='listFor'>
+                  {/* select certificate */}
+                  <div>
+                    <label name="certificate">Certificate</label>
+                    <select name="certificate" id='coa'>
+                      <option value="">select</option>
+                      {ownedCoAs.map((coa) => {
+                        return(
+                          <option value={`${coa.contract.address}-${coa.tokenId}`} key={`${coa.contract.address}-${coa.tokenId}`}>{coa.title}</option>
+                          )
+                        })}
+                    </select>
+                  </div>
+                  {/* to hoom */}
+                  <div>
+                    <label name="claimer">Claimer</label>
+                    <input type="text" name='claimer' id='address' placeholder='reciver address (ex. 0x... )' />
+                  </div>
+                  {formMsg !== '' && <p className='formMsg'>{formMsg}</p> }
+                  {/* button */}
+                  <button onClick={listCoA}>transfer</button>
+                </form>
+            </section>
+
+            <section>
+              <h3>Claimable certificates</h3>
+              <div className='claim-certificate'>
+
+                  <div className='claim-header'>
+                      <p></p>
+                      <h4>name</h4>
+                      <h4>token id</h4>
+                      <h4>bc address</h4>
+                      <h4>listing id</h4>
+                      <h4>sender</h4>
+                      <p></p>
+                  </div>
+                  
+                  {claimItem.map(item => (
+                      <div key={`${item.coaaddress}-${item.tokenId}`}>
+
+                        <section className='item-img'>
+                            <img src={item.image.replace('ipfs://', 'https://ipfs.io/ipfs/')} alt="f" />
+                        </section>
+                        <p>{item.titile}</p>
+                        <p>{item.tokenId}</p>
+                        <p>{(item.coaaddress).slice(0,7)}...</p>
+                        <p>{item.itemId}</p>
+                        <p>{(item.sender).slice(0,7)}...</p>
+                        <button onClick={(e) => {
+                            e.preventDefault()
+                            claimCoA(item.itemId)
+                        }}>claim</button>
+
+                        {/* {console.log('item loadaed', item.itemId)} */}
+                      </div>
+                  ))}
               </div>
-              {/* to hoom */}
-              <div>
-                <label name="claimer">Claimer</label>
-                <input type="text" name='claimer' id='address' placeholder='reciver address (ex. 0x... )' />
-              </div>
-              {formMsg !== '' && <p className='formMsg'>{formMsg}</p> }
-              {/* button */}
-              <button onClick={listCoA}>transfer</button>
-            </form>
-           </section> 
+            </section>
+          </>
+        : <></>
       }
 
       <section className='my-gallery'>
