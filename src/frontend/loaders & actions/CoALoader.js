@@ -86,16 +86,30 @@ export const profileLoader = async ({ params }) => {
 
         // console.log('listed items logs:', logs)
     const claimItems = await logChecker(logs, escrowcoacontract);
+
+        // clim logs
+    const claimLogs = [];
+    logs.forEach(async element => {
+        const itemId = Number(ethers.AbiCoder.defaultAbiCoder().decode(['uint256','address'], element.data)[0]);
+
+        // verify listing status
+        const status = await escrowcoacontract._itemsListed(itemId);
+
+        if(Number(status.status) === 1){
+            claimLogs.push(element)
+        }
+    })
+    console.log('logs climed', claimLogs.length);
     
     console.log('claimable items:', claimItems.length);
 
-    return {ownedCoAs: ownedCoAs, claimItem: claimItems};
+    return {ownedCoAs: ownedCoAs, claimItem: claimItems, claimLogs: logs};
 }
 
 async function logChecker(logs, escrowcoacontract){
     const claimItems = [];
 
-    const items = logs.forEach(async e => {
+   logs.forEach(async e => {
         // obtain item id
         const itemId = Number(ethers.AbiCoder.defaultAbiCoder().decode(['uint256','address'], e.data)[0]);
             // console.log('itemId:', itemId);
@@ -129,7 +143,6 @@ async function logChecker(logs, escrowcoacontract){
 
             claimItems.push(item)
         }
-        console.log('--- climable items', claimItems)
     })
 
     return claimItems;
