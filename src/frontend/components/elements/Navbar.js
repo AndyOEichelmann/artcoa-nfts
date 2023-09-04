@@ -3,6 +3,7 @@ import { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 
 import AccountContext from '../../context/AccountContext';
+import { setMinter } from '../../loaders & actions/CoALoader';
 
 let injectedProvider = false;
 
@@ -41,6 +42,9 @@ const Navbar = () => {
             // Get metamask account
             const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
             const account = accounts[0];
+
+            console.log(account);
+            await setMinter(account);
             
             setAcc({ account });
         }

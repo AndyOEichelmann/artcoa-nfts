@@ -8,6 +8,7 @@ import AccountContext from '../../context/AccountContext';
 
 import contractaddress from '../../contract-data/ERC721CoA-address.json';
 import contractabi from '../../contract-data/ERC721CoA.json';
+import { setMinter } from '../../loaders & actions/CoALoader';
 
 
 
@@ -166,6 +167,11 @@ export default function CreateCoA() {
             
                 // verify that user has roll - if not grant roll w admin account
             const hasRoll = await coacontract.hasRole(roleMint, acc.account);
+            // await hasRoll.wait();
+
+            // await setMinter(acc.account);
+
+            // if(!hasRoll)
             
             if(hasRoll && data.metadataURI !== undefined && data.authURI !== undefined){
                 // mint token

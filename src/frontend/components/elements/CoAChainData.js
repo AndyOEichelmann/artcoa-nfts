@@ -25,7 +25,7 @@ const CoAChainData = ({ id, coaname, date, owner }) => {
         </div>
         <div>
             <h4>Registered Date</h4>
-            <p className="coachain-info">{new Date(date).toLocaleDateString("en-US", dateoptions)}</p>
+            <p className="coachain-info">{new Date(date).toLocaleString("en-US", dateoptions)}</p>
         </div>
         <div>
             <h4>Current Owner</h4>

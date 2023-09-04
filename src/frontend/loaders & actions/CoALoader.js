@@ -207,6 +207,8 @@ export const coaLoader = async ({ params }) => {
 
 export const setMinter = async (minter) => {
 
+        console.log('minter:', minter)
+
         // contract address whose NFTs you want to fetch
         const address = "0x7D945e32D2B9C2c52b7388e2CD2764A0Cc666FBc";
 
@@ -215,11 +217,14 @@ export const setMinter = async (minter) => {
         // set minter
         const roleMint = await proxycontract.MINTER_ROLE();
         const hasRoll = await proxycontract.hasRole(roleMint, minter);
+        console.log('hass roll',hasRoll);
+
         if(!hasRoll){
-            await proxycontract.grantRole(roleMint, minter.address);
-            console.log('minter roll granted')
+            await proxycontract.grantRole(roleMint, minter);
+            console.log('minter roll granted to:', minter)
         }
 
         // minter roll
         console.log('minter rooll:', true)
+        return true;
 }

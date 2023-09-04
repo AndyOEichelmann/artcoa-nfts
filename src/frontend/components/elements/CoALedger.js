@@ -5,7 +5,7 @@ const CoALedger = ({ ledger }) => {
         return(
             <section className="ledger-element" key={`tx-${e.transactionHash}`} >
                 <p>{(e.transactionHash).slice(0, 10)}...</p>
-                <p>{new Date(e.timestamp).toLocaleDateString("en-US")}</p>
+                <p>{new Date(e.timestamp * 1000).toLocaleString()}</p>
                 <p>{(e.from).slice(0, 10)}...</p>
                 <p>{(e.to).slice(0, 10)}...</p>
             </section>
