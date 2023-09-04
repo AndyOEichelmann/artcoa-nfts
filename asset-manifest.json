@@ -1,19 +1,19 @@
 {
   "files": {
     "main.css": "/artcoa-nfts/static/css/main.c0347ef3.css",
-    "main.js": "/artcoa-nfts/static/js/main.410e5ad4.js",
+    "main.js": "/artcoa-nfts/static/js/main.3b5e85d1.js",
     "static/js/282.605a97d3.chunk.js": "/artcoa-nfts/static/js/282.605a97d3.chunk.js",
     "static/js/189.fe7de20a.chunk.js": "/artcoa-nfts/static/js/189.fe7de20a.chunk.js",
     "static/media/index.cjs": "/artcoa-nfts/static/media/index.484628978b97af3b0b6e.cjs",
     "static/media/axios.cjs": "/artcoa-nfts/static/media/axios.e127f42b383af9f755dc.cjs",
     "index.html": "/artcoa-nfts/index.html",
     "main.c0347ef3.css.map": "/artcoa-nfts/static/css/main.c0347ef3.css.map",
-    "main.410e5ad4.js.map": "/artcoa-nfts/static/js/main.410e5ad4.js.map",
+    "main.3b5e85d1.js.map": "/artcoa-nfts/static/js/main.3b5e85d1.js.map",
     "282.605a97d3.chunk.js.map": "/artcoa-nfts/static/js/282.605a97d3.chunk.js.map",
     "189.fe7de20a.chunk.js.map": "/artcoa-nfts/static/js/189.fe7de20a.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.c0347ef3.css",
-    "static/js/main.410e5ad4.js"
+    "static/js/main.3b5e85d1.js"
   ]
 }
