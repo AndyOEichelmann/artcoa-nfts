@@ -50,7 +50,8 @@ function Profile() {
 
         // verify and approve for all the contract address
         const isApproved = await coacontract.isApprovedForAll(acc.account, escrowaddress.address);
-          console.log('contact approved for all:', isApproved);
+          
+        console.log('contact approved for all:', isApproved);
           // if not approved for all call function
         if(!isApproved){
           await coacontract.setApprovalForAll(escrowaddress.address, true);
