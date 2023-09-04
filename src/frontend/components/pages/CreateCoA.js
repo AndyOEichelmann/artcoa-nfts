@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { useContext, useState } from 'react';
-import { redirect } from 'react-router-dom';
+import { redirect, useNavigate } from 'react-router-dom';
 
 import { sendFileToIPFS, sendJSONToIPFS } from '../../apis/piniata';
 
@@ -15,6 +15,9 @@ import { setMinter } from '../../loaders & actions/CoALoader';
 export default function CreateCoA() {
 
     const { acc } = useContext(AccountContext);
+
+    // navigation
+    const navigate = useNavigate();
 
     // message
     const [msg, setMsg] = useState('');
@@ -186,8 +189,8 @@ export default function CreateCoA() {
             setMsg('');
 
             // redirect user to desired url : window.location.replace("/") || reactRowterDOM {return redirect('/')}
-            window.location.replace("/");
-            // return redirect('/');
+            // window.location.replace("/artcoa-nfts");
+            navigate('/');
             
         } catch (error) {
             console.log('mint error: ',error);
