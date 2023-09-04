@@ -64,7 +64,8 @@ const router = createBrowserRouter(
       {/* --- DEFAULT ROUT FOR NON EXISTING ROUTES --- */}
       <Route path='*' element={<NotFound />} />
     </Route>
-  )
+  ),
+  {basename:"/artcoa-nfts"}
 );
 
 function App() {
